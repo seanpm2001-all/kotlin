@@ -30,7 +30,6 @@ import org.jetbrains.kotlin.analysis.api.types.KtType
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.light.classes.symbol.*
 import org.jetbrains.kotlin.load.java.JvmAbi
-import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.StandardClassIds
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.containingClass
@@ -48,12 +47,7 @@ internal fun getOrCreateFirLightClass(classOrObject: KtClassOrObject): KtLightCl
 
 @OptIn(HackToForceAllowRunningAnalyzeOnEDT::class)
 internal fun createFirLightClassNoCache(classOrObject: KtClassOrObject): KtLightClass? = hackyAllowRunningOnEdt {
-
     val containingFile = classOrObject.containingFile
-    if (containingFile is KtCodeFragment) {
-        // Avoid building light classes for code fragments
-        return null
-    }
 
     if (containingFile is KtFile && containingFile.isCompiled) return null
 
@@ -91,10 +85,6 @@ internal fun KtClassOrObjectSymbol.createLightClassNoCache(manager: PsiManager):
         else -> FirLightClassForSymbol(this, manager)
     }
 }
-
-
-
-
 
 private fun lightClassForEnumEntry(ktEnumEntry: KtEnumEntry): KtLightClass? {
     if (ktEnumEntry.body == null) return null

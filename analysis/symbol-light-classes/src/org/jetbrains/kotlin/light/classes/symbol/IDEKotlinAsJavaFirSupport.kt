@@ -17,6 +17,7 @@ import org.jetbrains.kotlin.asJava.classes.KtLightClass
 import org.jetbrains.kotlin.fileClasses.javaFileFacadeFqName
 import org.jetbrains.kotlin.light.classes.symbol.caches.SymbolLightClassFacadeCache
 import org.jetbrains.kotlin.light.classes.symbol.classes.getOrCreateFirLightClass
+import org.jetbrains.kotlin.light.classes.symbol.decompiled.getOrCreateFirLightClassForDeserialized
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.parentOrNull
@@ -63,7 +64,6 @@ class IDEKotlinAsJavaFirSupport(private val project: Project) : KotlinAsJavaSupp
         fqName.toClassIdSequence().flatMap {
             project.createDeclarationProvider(searchScope).getClassesByClassId(it)
         }.filter {
-            //TODO Do not return LC came from LibrarySources
             when (it.getKtModule(project)) {
                 is KtLibrarySourceModule -> false
                 is KtNotUnderContentRootModule -> false
@@ -80,8 +80,11 @@ class IDEKotlinAsJavaFirSupport(private val project: Project) : KotlinAsJavaSupp
             .map { fqn.child(it) }
 
     override fun getLightClass(classOrObject: KtClassOrObject): KtLightClass? {
-        if (!classOrObject.isFromSource()) return null
-        return getOrCreateFirLightClass(classOrObject)
+        return when (classOrObject.getKtModule(project)) {
+            is KtSourceModule -> getOrCreateFirLightClass(classOrObject)
+            is KtLibraryModule -> getOrCreateFirLightClassForDeserialized(classOrObject)
+            else -> null
+        }
     }
 
     override fun getLightClassForScript(script: KtScript): KtLightClass =
@@ -105,7 +108,7 @@ class IDEKotlinAsJavaFirSupport(private val project: Project) : KotlinAsJavaSupp
         project.createDeclarationProvider(scope)
             .getFacadeFilesInPackage(packageFqName)
             .asSequence()
-            .filter { it.isFromSource() }
+            .filter { it.isFromSourceOrLibrary() }
             .groupBy { it.javaFileFacadeFqName }
             .mapNotNull {
                 project.getService(SymbolLightClassFacadeCache::class.java)
@@ -115,13 +118,13 @@ class IDEKotlinAsJavaFirSupport(private val project: Project) : KotlinAsJavaSupp
     override fun getFacadeNames(packageFqName: FqName, scope: GlobalSearchScope): Collection<String> =
         project.createDeclarationProvider(scope)
             .getFacadeFilesInPackage(packageFqName)
-            .filter { it.isFromSource() }
+            .filter { it.isFromSourceOrLibrary() }
             .mapTo(mutableSetOf()) { it.javaFileFacadeFqName.shortName().asString() }
 
     override fun findFilesForFacade(facadeFqName: FqName, scope: GlobalSearchScope): Collection<KtFile> {
         return project.createDeclarationProvider(scope)
             .findFilesForFacade(facadeFqName)
-            .filter { it.isFromSource() }
+            .filter { it.isFromSourceOrLibrary() }
     }
 
     override fun getFakeLightClass(classOrObject: KtClassOrObject): KtFakeLightClass =
@@ -131,11 +134,14 @@ class IDEKotlinAsJavaFirSupport(private val project: Project) : KotlinAsJavaSupp
         TODO("Not implemented")
 }
 
-
-private fun KtElement.isFromSource(): Boolean {
+private fun KtElement.isFromSourceOrLibrary(): Boolean {
     if (this is KtFile && isCompiled) {
         // small optimisation to not invoke expensive getKtModule
-        return false
+        return true
     }
-    return getKtModule(project) is KtSourceModule
+    return when (getKtModule(project)) {
+        is KtSourceModule -> true
+        is KtLibraryModule -> true
+        else -> false
+    }
 }
