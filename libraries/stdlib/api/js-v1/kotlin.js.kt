@@ -229,8 +229,8 @@ public external interface JsClass<T : kotlin.Any> {
 @kotlin.annotation.Retention(value = AnnotationRetention.BINARY)
 @kotlin.annotation.Target(allowedTargets = {AnnotationTarget.PROPERTY})
 @kotlin.SinceKotlin(version = "1.6")
-public final annotation class JsEagerInitialization : kotlin.Annotation {
-    public constructor JsEagerInitialization()
+public final annotation class EagerInitialization : kotlin.Annotation {
+    public constructor EagerInitialization()
 }
 
 @kotlin.js.ExperimentalJsExport
