@@ -48,5 +48,26 @@ declare namespace JS_TESTS {
         function getA(): foo.I3;
         function getB(): foo.I3;
         function getC(): foo.I3;
+        abstract class Aboba2 implements foo.I3 {
+            constructor();
+            abstract readonly foo: string;
+            abstract bar: string;
+            abstract readonly baz: string;
+            readonly __doNotUseIt: __doNotImplementIt;
+        }
+        class B2 extends foo.Aboba2 {
+            constructor();
+            readonly foo: string;
+            bar: string;
+            readonly baz: string;
+            bay(): string;
+        }
+        class C2 extends foo.B2 {
+            constructor();
+            readonly foo: string;
+            bar: string;
+            baz: string;
+            bay(): string;
+        }
     }
 }

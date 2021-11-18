@@ -16,6 +16,7 @@ import org.jetbrains.kotlin.ir.backend.js.JsLoweredDeclarationOrigin
 import org.jetbrains.kotlin.ir.backend.js.lower.ES6AddInternalParametersToConstructorPhase.ES6_INIT_BOX_PARAMETER
 import org.jetbrains.kotlin.ir.backend.js.lower.ES6AddInternalParametersToConstructorPhase.ES6_RESULT_TYPE_PARAMETER
 import org.jetbrains.kotlin.ir.backend.js.utils.getJsNameOrKotlinName
+import org.jetbrains.kotlin.ir.backend.js.utils.isExportedInterface
 import org.jetbrains.kotlin.ir.backend.js.utils.isJsExport
 import org.jetbrains.kotlin.ir.backend.js.utils.sanitizeName
 import org.jetbrains.kotlin.ir.declarations.*
@@ -115,7 +116,7 @@ class ExportModelGenerator(
             // TODO: Report a frontend error
             if (accessor.extensionReceiverParameter != null)
                 return null
-            if (accessor.isFakeOverride && !accessor.isEnumFakeOverriddenDeclaration(context)) {
+            if (accessor.isFakeOverride && !accessor.isAllowedFakeOverriddenDeclaration(context)) {
                 return null
             }
         }
@@ -386,7 +387,7 @@ class ExportModelGenerator(
         val enumEntries = enumEntriesToOrdinal.keys
         return when (candidate) {
             is IrProperty -> {
-                if (candidate.isEnumFakeOverriddenDeclaration(context)) {
+                if (candidate.isAllowedFakeOverriddenDeclaration(context)) {
                     val type: ExportedType? = when (candidate.getExportedIdentifier()) {
                         "name" -> enumEntries
                             .map { it.getExportedIdentifier() }
@@ -609,7 +610,7 @@ private fun shouldDeclarationBeExported(declaration: IrDeclarationWithName, cont
         if (overriddenNonEmpty) {
             return declaration.isOverriddenExported(context) ||
                     (declaration as? IrSimpleFunction)?.isMethodOfAny() == true // Handle names for special functions
-                    || declaration.isEnumFakeOverriddenDeclaration(context)
+                    || declaration.isAllowedFakeOverriddenDeclaration(context)
         }
     }
 
@@ -623,7 +624,11 @@ private fun shouldDeclarationBeExported(declaration: IrDeclarationWithName, cont
     }
 }
 
-fun IrOverridableDeclaration<*>.isEnumFakeOverriddenDeclaration(context: JsIrBackendContext?): Boolean {
+fun IrOverridableDeclaration<*>.isAllowedFakeOverriddenDeclaration(context: JsIrBackendContext?): Boolean {
+    if(this.resolveFakeOverride(allowAbstract = true)?.parentClassOrNull.isExportedInterface()) {
+        return true
+    }
+
     return context?.irBuiltIns?.enumClass?.let { enumClass ->
         overriddenSymbols
             .asSequence()

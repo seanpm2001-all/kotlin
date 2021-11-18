@@ -7,7 +7,7 @@ package org.jetbrains.kotlin.ir.backend.js.transformers.irToJs
 
 import org.jetbrains.kotlin.descriptors.DescriptorVisibilities
 import org.jetbrains.kotlin.descriptors.Modality
-import org.jetbrains.kotlin.ir.backend.js.export.isEnumFakeOverriddenDeclaration
+import org.jetbrains.kotlin.ir.backend.js.export.isAllowedFakeOverriddenDeclaration
 import org.jetbrains.kotlin.ir.backend.js.export.isExported
 import org.jetbrains.kotlin.ir.backend.js.export.isOverriddenExported
 import org.jetbrains.kotlin.ir.backend.js.utils.*
@@ -111,8 +111,7 @@ class JsClassGenerator(private val irClass: IrClass, val context: JsGenerationCo
 
                 if (
                     property.isFakeOverride &&
-                    !property.isEnumFakeOverriddenDeclaration(context.staticContext.backendContext) &&
-                    !property.resolveFakeOverride(allowAbstract = true)?.parentClassOrNull.isExportedInterface()
+                    !property.isAllowedFakeOverriddenDeclaration(context.staticContext.backendContext)
                 )
                     continue
 
@@ -148,7 +147,7 @@ class JsClassGenerator(private val irClass: IrClass, val context: JsGenerationCo
                 val noOverriddenExportedSetter = property.setter?.isOverriddenExported(context.staticContext.backendContext) == false
 
                 val needsOverride = (overriddenExportedGetter && noOverriddenExportedSetter) ||
-                        property.isEnumFakeOverriddenDeclaration(context.staticContext.backendContext)
+                        property.isAllowedFakeOverriddenDeclaration(context.staticContext.backendContext)
 
                 if (irClass.isExported(context.staticContext.backendContext) &&
                     (overriddenSymbols.isEmpty() || needsOverride) ||
