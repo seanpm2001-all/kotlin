@@ -5,6 +5,7 @@
 
 package org.jetbrains.kotlin.generators.tests.analysis.api
 
+import org.jetbrains.kotlin.analysis.api.descriptors.test.annotations.AbstractAnalysisApiFe10AnnotationsOnTypesTest
 import org.jetbrains.kotlin.analysis.api.descriptors.test.components.callResolver.AbstractKtFe10ResolveCallTest
 import org.jetbrains.kotlin.analysis.api.descriptors.test.components.expressionInfoProvider.AbstractKtFe10WhenMissingCasesTest
 import org.jetbrains.kotlin.analysis.api.descriptors.test.components.expressionTypeProvider.AbstractKtFe10ExpectedExpressionTypeTest
@@ -19,6 +20,7 @@ import org.jetbrains.kotlin.analysis.api.descriptors.test.symbols.AbstractKtFe10
 import org.jetbrains.kotlin.analysis.api.descriptors.test.symbols.AbstractKtFe10SymbolByPsiTest
 import org.jetbrains.kotlin.analysis.api.descriptors.test.symbols.AbstractKtFe10SymbolByReferenceTest
 import org.jetbrains.kotlin.analysis.api.fir.AbstractFirReferenceResolveTest
+import org.jetbrains.kotlin.analysis.api.fir.annotations.AbstractAnalysisApiFirAnnotationsOnTypesTest
 import org.jetbrains.kotlin.analysis.api.fir.components.callResolver.AbstractFirResolveCallTest
 import org.jetbrains.kotlin.analysis.api.fir.components.compileTimeConstantProvider.AbstractFirCompileTimeConstantEvaluatorTest
 import org.jetbrains.kotlin.analysis.api.fir.components.expressionInfoProvider.AbstractFirWhenMissingCasesTest
@@ -98,6 +100,15 @@ private fun TestGroupSuite.generateAnalysisApiNonComponentsTests() {
             fe10 = AbstractKtFe10SymbolByReferenceTest::class,
         ) {
             model("symbolByReference")
+        }
+    }
+
+    group("annotations") {
+        test(
+            fir = AbstractAnalysisApiFirAnnotationsOnTypesTest::class,
+            fe10 = AbstractAnalysisApiFe10AnnotationsOnTypesTest::class
+        ) {
+            model("annotationsOnTypes")
         }
     }
 }

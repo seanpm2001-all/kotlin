@@ -22,3 +22,8 @@ inline fun <R> analyseOnPooledThreadInReadAction(context: KtElement, crossinline
     executeOnPooledThreadInReadAction {
         analyse(context) { action() }
     }
+
+fun String.indented(indent: Int): String {
+    val indentString = " ".repeat(indent)
+    return indentString + replace("\n", "\n$indentString")
+}
