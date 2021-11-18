@@ -109,7 +109,11 @@ class JsClassGenerator(private val irClass: IrClass, val context: JsGenerationCo
                 if (!property.visibility.isPublicAPI)
                     continue
 
-                if (property.isFakeOverride && !property.isEnumFakeOverriddenDeclaration(context.staticContext.backendContext))
+                if (
+                    property.isFakeOverride &&
+                    !property.isEnumFakeOverriddenDeclaration(context.staticContext.backendContext) &&
+                    !property.resolveFakeOverride(allowAbstract = true)?.parentClassOrNull.isExportedInterface()
+                )
                     continue
 
                 fun IrSimpleFunction.propertyAccessorForwarder(
@@ -134,13 +138,8 @@ class JsClassGenerator(private val irClass: IrClass, val context: JsGenerationCo
                 // so we need regenerate `defineProperty` with setter.
                 // P.S. If the overridden property is owned by an interface - we should generate defineProperty
                 // for overridden property in the first class which override those properties
-                val hasOverriddenExportedInterfaceProperties = overriddenSymbols
-                    .any { overriddenSymbol ->
-                        overriddenSymbol.owner
-                            .resolveFakeOverride(allowAbstract = true)
-                            ?.parentClassOrNull
-                            .isExportedInterface()
-                    } && !overriddenSymbols.any { it.owner.parentClassOrNull.isExportedClass() }
+                val hasOverriddenExportedInterfaceProperties = overriddenSymbols.any { it.owner.parentClassOrNull.isExportedInterface() }
+                        && !overriddenSymbols.any { it.owner.parentClassOrNull.isExportedClass() }
 
                 val getterOverridesExternal = property.getter?.overridesExternal() == true
                 val overriddenExportedGetter = !property.getter?.overriddenSymbols.isNullOrEmpty() &&

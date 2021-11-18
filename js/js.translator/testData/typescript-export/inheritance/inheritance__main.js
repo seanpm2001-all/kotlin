@@ -76,23 +76,31 @@ function box() {
         return "Fail 12";
     if (getI3().baz != "bazI3")
         return "Fail 13";
-    if (getA().foo != "fooA")
+    if (getI3().bay() != "bayI3")
         return "Fail 14";
-    if (getA().bar != "barA")
+    if (getA().foo != "fooA")
         return "Fail 15";
-    if (getA().baz != "bazA")
+    if (getA().bar != "barA")
         return "Fail 16";
-    if (getB().foo != "fooB")
+    if (getA().baz != "bazA")
         return "Fail 17";
-    if (getB().bar != "barB")
+    if (getA().bay() != "bayA")
         return "Fail 18";
-    if (getB().baz != "bazB")
+    if (getB().foo != "fooB")
         return "Fail 19";
-    if (getC().foo != "fooC")
+    if (getB().bar != "barB")
         return "Fail 20";
-    if (getC().bar != "barC")
+    if (getB().baz != "bazB")
         return "Fail 21";
-    if (getC().baz != "bazC")
+    if (getB().bay() != "bayB")
         return "Fail 22";
+    if (getC().foo != "fooC")
+        return "Fail 23";
+    if (getC().bar != "barC")
+        return "Fail 24";
+    if (getC().baz != "bazC")
+        return "Fail 25";
+    if (getC().bay() != "bayC")
+        return "Fail 26";
     return "OK";
 }

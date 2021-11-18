@@ -62,6 +62,8 @@ interface I3 {
     val foo: String
     var bar: String
     val baz: String
+
+    fun bay(): String
 }
 
 @JsExport
@@ -71,6 +73,8 @@ fun getI3(): I3 = object : I3 {
     override var bar: String = "barI3"
 
     override var baz: String = "bazI3"
+
+    override fun bay(): String = "bayI3"
 }
 
 abstract class A : I3
@@ -82,6 +86,8 @@ fun getA(): I3 = object : A() {
     override var bar: String = "barA"
 
     override var baz: String = "bazA"
+
+    override fun bay(): String = "bayA"
 }
 
 open class B : A() {
@@ -90,6 +96,8 @@ open class B : A() {
     override var bar: String = "barB"
 
     override val baz: String = "bazB"
+
+    override fun bay(): String = "bayB"
 }
 
 @JsExport
@@ -101,10 +109,37 @@ open class C : B() {
     override var bar: String = "barC"
 
     override var baz: String = "bazC"
+
+    override fun bay(): String = "bayC"
 }
 
 @JsExport
 fun getC(): I3 = C()
+
+//@JsExport
+//abstract class Aboba2 : I3
+//
+//@JsExport
+//open class B2 : Aboba2() {
+//    override val foo: String = "fooB2"
+//
+//    override var bar: String = "barB2"
+//
+//    override val baz: String = "bazB2"
+//
+//    override fun bay(): String = "bayB2"
+//}
+//
+//@JsExport
+//open class C2 : B2() {
+//    override val foo: String = "fooC2"
+//
+//    override var bar: String = "barC2"
+//
+//    override var baz: String = "bazC2"
+//
+//    override fun bay(): String = "bayC2"
+//}
 
 //@JsExport
 //enum class EC : I3 {

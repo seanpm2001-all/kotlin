@@ -43,18 +43,22 @@ function box(): string {
     if (getI3().foo != "fooI3") return "Fail 11"
     if (getI3().bar != "barI3") return "Fail 12"
     if (getI3().baz != "bazI3") return "Fail 13"
+    if (getI3().bay() != "bayI3") return "Fail 14"
 
-    if (getA().foo != "fooA") return "Fail 14"
-    if (getA().bar != "barA") return "Fail 15"
-    if (getA().baz != "bazA") return "Fail 16"
+    if (getA().foo != "fooA") return "Fail 15"
+    if (getA().bar != "barA") return "Fail 16"
+    if (getA().baz != "bazA") return "Fail 17"
+    if (getA().bay() != "bayA") return "Fail 18"
 
-    if (getB().foo != "fooB") return "Fail 17"
-    if (getB().bar != "barB") return "Fail 18"
-    if (getB().baz != "bazB") return "Fail 19"
+    if (getB().foo != "fooB") return "Fail 19"
+    if (getB().bar != "barB") return "Fail 20"
+    if (getB().baz != "bazB") return "Fail 21"
+    if (getB().bay() != "bayB") return "Fail 22"
 
-    if (getC().foo != "fooC") return "Fail 20"
-    if (getC().bar != "barC") return "Fail 21"
-    if (getC().baz != "bazC") return "Fail 22"
+    if (getC().foo != "fooC") return "Fail 23"
+    if (getC().bar != "barC") return "Fail 24"
+    if (getC().baz != "bazC") return "Fail 25"
+    if (getC().bay() != "bayC") return "Fail 26"
 
     return "OK";
 }

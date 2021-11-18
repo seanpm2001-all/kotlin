@@ -41,6 +41,7 @@ declare namespace JS_TESTS {
             readonly foo: string;
             bar: string;
             readonly baz: string;
+            bay(): string;
             readonly __doNotUseIt: __doNotImplementIt;
         }
         function getI3(): foo.I3;
