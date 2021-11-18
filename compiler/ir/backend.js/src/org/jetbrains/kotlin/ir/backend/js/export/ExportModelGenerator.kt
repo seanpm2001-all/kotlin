@@ -146,6 +146,10 @@ class ExportModelGenerator(
         val irEnumEntry = context.mapping.fieldToEnumEntry[field]
             ?: error("Unable to find enum entry for ${field.fqNameWhenAvailable}")
 
+        val correspondingClassDeclarations = irEnumEntry.correspondingClass?.let {
+            exportClassDeclarations(it).members
+        } ?: emptyList()
+
         val parentClass = field.parent as IrClass
 
         val name = irEnumEntry.getExportedIdentifier()
@@ -175,7 +179,7 @@ class ExportModelGenerator(
         )
 
         val type = ExportedType.InlineInterfaceType(
-            listOf(nameProperty, ordinalProperty)
+            listOf(nameProperty, ordinalProperty) + correspondingClassDeclarations
         )
 
         return ExportedProperty(
