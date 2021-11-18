@@ -6,7 +6,6 @@
 package org.jetbrains.kotlin.ir.backend.js.transformers.irToJs
 
 import org.jetbrains.kotlin.descriptors.DescriptorVisibilities
-import org.jetbrains.kotlin.descriptors.DescriptorVisibility
 import org.jetbrains.kotlin.descriptors.Modality
 import org.jetbrains.kotlin.ir.backend.js.export.isEnumFakeOverriddenDeclaration
 import org.jetbrains.kotlin.ir.backend.js.export.isExported
@@ -102,7 +101,7 @@ class JsClassGenerator(private val irClass: IrClass, val context: JsGenerationCo
 
         classBlock.statements += generateClassMetadata()
 
-        if (!irClass.isInterface && !irClass.isEnumEntry) {
+        if (!irClass.isInterface) {
             for (property in properties) {
                 if (property.getter?.extensionReceiverParameter != null || property.setter?.extensionReceiverParameter != null)
                     continue
@@ -135,8 +134,13 @@ class JsClassGenerator(private val irClass: IrClass, val context: JsGenerationCo
                 // so we need regenerate `defineProperty` with setter.
                 // P.S. If the overridden property is owned by an interface - we should generate defineProperty
                 // for overridden property in the first class which override those properties
-                val hasOverriddenExportedInterfaceProperties = overriddenSymbols.any { it.owner.parentClassOrNull.isExportedInterface() }
-                        && !overriddenSymbols.any { it.owner.parentClassOrNull.isExportedClass() }
+                val hasOverriddenExportedInterfaceProperties = overriddenSymbols
+                    .any { overriddenSymbol ->
+                        overriddenSymbol.owner
+                            .resolveFakeOverride(allowAbstract = true)
+                            ?.parentClassOrNull
+                            .isExportedInterface()
+                    } && !overriddenSymbols.any { it.owner.parentClassOrNull.isExportedClass() }
 
                 val getterOverridesExternal = property.getter?.overridesExternal() == true
                 val overriddenExportedGetter = !property.getter?.overriddenSymbols.isNullOrEmpty() &&

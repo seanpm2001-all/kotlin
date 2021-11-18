@@ -37,5 +37,15 @@ declare namespace JS_TESTS {
         const O2: {
             foo(): number;
         } & foo.OC;
+        interface I3 {
+            readonly foo: string;
+            bar: string;
+            readonly baz: string;
+            readonly __doNotUseIt: __doNotImplementIt;
+        }
+        function getI3(): foo.I3;
+        function getA(): foo.I3;
+        function getB(): foo.I3;
+        function getC(): foo.I3;
     }
 }

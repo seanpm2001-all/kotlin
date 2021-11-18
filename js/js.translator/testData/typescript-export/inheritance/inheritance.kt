@@ -7,22 +7,23 @@
 // MODULE: JS_TESTS
 // FILE: inheritance.kt
 
-@file:JsExport
-
 package foo
 
+@JsExport
 external interface I<T, out S, in U> {
     var x: T
     val y: S
     fun z(u: U)
 }
 
+@JsExport
 external interface I2 {
     var x: String
     val y: Boolean
     fun z(z: Int)
 }
 
+@JsExport
 abstract class AC : I2 {
     override var x = "AC"
     override abstract val y: Boolean
@@ -32,6 +33,7 @@ abstract class AC : I2 {
     abstract val acAbstractProp: String
 }
 
+@JsExport
 open class OC(
     override val y: Boolean,
     override val acAbstractProp: String
@@ -43,11 +45,84 @@ open class OC(
     private fun privateFun(): String = "privateFun"
 }
 
+@JsExport
 final class FC : OC(true, "FC")
 
+@JsExport
 object O1 : OC(true, "O1")
 
+@JsExport
 object O2 : OC(true, "O2") {
     @JsName("foo")  // TODO: Should work without JsName
     fun foo(): Int = 10
 }
+
+@JsExport
+interface I3 {
+    val foo: String
+    var bar: String
+    val baz: String
+}
+
+@JsExport
+fun getI3(): I3 = object : I3 {
+    override val foo: String = "fooI3"
+
+    override var bar: String = "barI3"
+
+    override var baz: String = "bazI3"
+}
+
+abstract class A : I3
+
+@JsExport
+fun getA(): I3 = object : A() {
+    override val foo: String = "fooA"
+
+    override var bar: String = "barA"
+
+    override var baz: String = "bazA"
+}
+
+open class B : A() {
+    override val foo: String = "fooB"
+
+    override var bar: String = "barB"
+
+    override val baz: String = "bazB"
+}
+
+@JsExport
+fun getB(): I3 = B()
+
+open class C : B() {
+    override val foo: String = "fooC"
+
+    override var bar: String = "barC"
+
+    override var baz: String = "bazC"
+}
+
+@JsExport
+fun getC(): I3 = C()
+
+//@JsExport
+//enum class EC : I3 {
+//    EC1 {
+//        override var baz = "ec1"
+//
+//        val bay = "bay"
+//    },
+//    EC2 {
+//        override var baz = "ec2"
+//    },
+//    EC3 {
+//        override var baz = "ec3"
+//    };
+//
+//    override val foo: String = "foo"
+//
+//    override var bar = "bar"
+//
+////    override val baz = "baz"
+//}
