@@ -7,6 +7,10 @@ import getI3 = JS_TESTS.foo.getI3;
 import getA = JS_TESTS.foo.getA;
 import getB = JS_TESTS.foo.getB;
 import getC = JS_TESTS.foo.getC;
+import A2 = JS_TESTS.foo.A2;
+import B2 = JS_TESTS.foo.B2;
+import C2 = JS_TESTS.foo.C2;
+import EC = JS_TESTS.foo.EC;
 
 class Impl extends AC {
     z(z: number): void {
@@ -15,6 +19,17 @@ class Impl extends AC {
     get acAbstractProp(): string { return "Impl"; }
     get y(): boolean { return true; }
 }
+
+// class A2Impl extends A2 {
+//     bar: string = "barA2"
+//     readonly baz: string = "bazA2"
+//     readonly foo: string = "fooA2"
+//
+//     bay(): string {
+//         return "bayA2";
+//     }
+//
+// }
 
 function box(): string {
     const impl = new Impl();
@@ -59,6 +74,42 @@ function box(): string {
     if (getC().bar != "barC") return "Fail 24"
     if (getC().baz != "bazC") return "Fail 25"
     if (getC().bay() != "bayC") return "Fail 26"
+
+    // const a2Impl = new A2Impl()
+    // if (a2Impl.foo != "fooA2") return "Fail 27"
+    // if (a2Impl.bar != "barA2") return "Fail 28"
+    // if (a2Impl.baz != "bazA2") return "Fail 29"
+    // if (a2Impl.bay() != "bayA2") return "Fail 30"
+
+    const b2 = new B2()
+    if (b2.foo != "fooB2") return "Fail 31"
+    if (b2.bar != "barB2") return "Fail 32"
+    if (b2.baz != "bazB2") return "Fail 33"
+    if (b2.bay() != "bayB2") return "Fail 34"
+
+    const c2 = new C2()
+    if (c2.foo != "fooC2") return "Fail 35"
+    if (c2.bar != "barC2") return "Fail 36"
+    if (c2.baz != "bazC2") return "Fail 37"
+    c2.baz = "bazC2-2"
+    if (c2.baz != "bazC2-2") return "Fail 38"
+    if (c2.bay() != "bayC2") return "Fail 39"
+
+    if (EC.EC1.foo != "foo") return "Fail 40"
+    if (EC.EC1.bar != "bar") return "Fail 41"
+    if (EC.EC1.baz != "ec1") return "Fail 42"
+    if (EC.EC1.bay() != "bay") return "Fail 43"
+    // if (EC.EC1.bah != "bah") return "Fail 44"
+
+    if (EC.EC2.foo != "foo") return "Fail 45"
+    if (EC.EC2.bar != "bar") return "Fail 46"
+    if (EC.EC2.baz != "ec2") return "Fail 47"
+    if (EC.EC2.bay() != "bay") return "Fail 48"
+
+    if (EC.EC3.foo != "foo") return "Fail 49"
+    if (EC.EC3.bar != "bar") return "Fail 50"
+    if (EC.EC3.baz != "ec3") return "Fail 51"
+    if (EC.EC3.bay() != "bay") return "Fail 52"
 
     return "OK";
 }

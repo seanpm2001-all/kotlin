@@ -512,7 +512,9 @@ class ExportModelGenerator(
             return Exportability.Prohibited("Inline reified function")
         if (function.isSuspend)
             return Exportability.Prohibited("Suspend function")
-        if (function.isFakeOverride)
+        if (function.isMethodOfAny())
+            return Exportability.NotNeeded
+        if (function.isFakeOverride && !function.isAllowedFakeOverriddenDeclaration(context))
             return Exportability.NotNeeded
         if (function.origin == JsLoweredDeclarationOrigin.BRIDGE_WITHOUT_STABLE_NAME ||
             function.origin == JsLoweredDeclarationOrigin.BRIDGE_WITH_STABLE_NAME ||
@@ -528,9 +530,6 @@ class ExportModelGenerator(
         if (parentClass != null && context.mapping.enumClassToInitEntryInstancesFun[parentClass] == function) {
             return Exportability.NotNeeded
         }
-
-        if (function.isFakeOverriddenFromAny())
-            return Exportability.NotNeeded
 
         val nameString = function.name.asString()
         if (nameString.endsWith("-impl"))
@@ -625,7 +624,7 @@ private fun shouldDeclarationBeExported(declaration: IrDeclarationWithName, cont
 }
 
 fun IrOverridableDeclaration<*>.isAllowedFakeOverriddenDeclaration(context: JsIrBackendContext?): Boolean {
-    if(this.resolveFakeOverride(allowAbstract = true)?.parentClassOrNull.isExportedInterface()) {
+    if (this.resolveFakeOverride(allowAbstract = true)?.parentClassOrNull.isExportedInterface()) {
         return true
     }
 
@@ -633,7 +632,8 @@ fun IrOverridableDeclaration<*>.isAllowedFakeOverriddenDeclaration(context: JsIr
         overriddenSymbols
             .asSequence()
             .map { it.owner }
-            .filterIsInstance<IrDeclaration>()
+            .filterIsInstance<IrOverridableDeclaration<*>>()
+            .filter { it.overriddenSymbols.isEmpty() }
             .mapNotNull { it.parentClassOrNull }
             .map { it.symbol }
             .any { it == enumClass }

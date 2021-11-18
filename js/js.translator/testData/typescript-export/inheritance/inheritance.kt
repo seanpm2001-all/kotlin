@@ -117,10 +117,10 @@ open class C : B() {
 fun getC(): I3 = C()
 
 @JsExport
-abstract class Aboba2 : I3
+abstract class A2 : I3
 
 @JsExport
-open class B2 : Aboba2() {
+open class B2 : A2() {
     override val foo: String = "fooB2"
 
     override var bar: String = "barB2"
@@ -141,23 +141,23 @@ open class C2 : B2() {
     override fun bay(): String = "bayC2"
 }
 
-//@JsExport
-//enum class EC : I3 {
-//    EC1 {
-//        override var baz = "ec1"
-//
-//        val bay = "bay"
-//    },
-//    EC2 {
-//        override var baz = "ec2"
-//    },
-//    EC3 {
-//        override var baz = "ec3"
-//    };
-//
-//    override val foo: String = "foo"
-//
-//    override var bar = "bar"
-//
-////    override val baz = "baz"
-//}
+@JsExport
+enum class EC : I3 {
+    EC1 {
+        override var baz = "ec1"
+
+        val bah = "bah"
+    },
+    EC2 {
+        override var baz = "ec2"
+    },
+    EC3 {
+        override var baz = "ec3"
+    };
+
+    override val foo: String = "foo"
+
+    override var bar = "bar"
+
+    override fun bay(): String = "bay"
+}
