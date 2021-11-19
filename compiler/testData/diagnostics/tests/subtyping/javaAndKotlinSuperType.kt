@@ -37,6 +37,12 @@ interface Z: X
 class W: B(), Z
 
 fun test2(w: W) {
+    // W <: A<String>
     eatAString(w)
     eatAStringN(<!TYPE_MISMATCH!>w<!>)
 }
+
+/*
+  W : A<String>, A<String!>
+
+ */
