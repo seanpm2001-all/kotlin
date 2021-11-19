@@ -135,6 +135,11 @@ tasks {
     }
 
     named("compileKotlinJs", KotlinCompile::class) {
-        kotlinOptions.freeCompilerArgs += "-Xir-module-name=kotlin"
+        kotlinOptions.freeCompilerArgs
+            .map {
+                if (it.startsWith("-Xir-module-name"))
+                    "-Xir-module-name=kotlin"
+                else it
+            }
     }
 }

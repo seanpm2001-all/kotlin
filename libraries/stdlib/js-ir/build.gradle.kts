@@ -146,7 +146,12 @@ tasks.withType<KotlinCompile<*>>().configureEach {
 }
 
 val compileKotlinJs by tasks.existing(KotlinCompile::class) {
-    kotlinOptions.freeCompilerArgs += "-Xir-module-name=kotlin"
+    kotlinOptions.freeCompilerArgs
+        .map {
+            if (it.startsWith("-Xir-module-name"))
+                "-Xir-module-name=kotlin"
+            else it
+        }
 
     if (!kotlinBuildProperties.disableWerror) {
         kotlinOptions.allWarningsAsErrors = true
