@@ -75,7 +75,7 @@ private fun FirTypeRef.isBuiltinType(classId: ClassId, isNullable: Boolean): Boo
 }
 
 val FirTypeRef.isMarkedNullable: Boolean?
-    get() = classLikeTypeOrNull?.isMarkedNullable
+    get() = if (this is FirTypeRefWithNullability) this.isMarkedNullable else classLikeTypeOrNull?.isMarkedNullable
 
 val FirFunctionTypeRef.parametersCount: Int
     get() = if (receiverTypeRef != null)

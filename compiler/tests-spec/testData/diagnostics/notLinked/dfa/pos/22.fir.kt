@@ -84,8 +84,8 @@ fun case_8(x: Any?) {
 
 // TESTCASE NUMBER: 9
 fun case_9(x: Any?) {
-    if (!!!(x !is TypealiasNullableStringIndirect?)) else {
-        if (!!(x !is TypealiasNullableStringIndirect?)) else {
+    if (!!!(x !is TypealiasNullableStringIndirect<!REDUNDANT_NULLABLE!>?<!>)) else {
+        if (!!(x !is TypealiasNullableStringIndirect<!REDUNDANT_NULLABLE!>?<!>)) else {
             <!DEBUG_INFO_EXPRESSION_TYPE("kotlin.Any? & TypealiasNullableStringIndirect?")!>x<!>
             <!DEBUG_INFO_EXPRESSION_TYPE("kotlin.Any? & TypealiasNullableStringIndirect?")!>x<!>?.get(0)
         }

@@ -1,3 +1,4 @@
+// FIR_IDENTICAL
 interface B<T>
 class G<T>: B<T>
 
