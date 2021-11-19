@@ -17,7 +17,33 @@ import org.jetbrains.kotlin.types.TypeCheckerState
 import org.jetbrains.kotlin.types.model.CaptureStatus
 import org.jetbrains.kotlin.types.model.SimpleTypeMarker
 import org.jetbrains.kotlin.types.model.TypeConstructorMarker
+/*
+// FILE: A.java
+public interface A<T> {
+}
 
+// FILE: B.java
+public class B implements A<String> {
+
+}
+
+// FILE: main.kt
+interface X : A<String>
+interface Y: X
+interface Z: X
+
+class W: B(), Z
+
+fun eatAString(a: A<String>) {}
+fun eatAStringN(a: A<String?>) {}
+
+fun test(w: W) {
+    eatAString(w)
+    eatAStringN(w)
+}
+
+
+ */
 @ThreadSafeMutableState
 class FirCorrespondingSupertypesCache(private val session: FirSession) : FirSessionComponent {
     private val cache = HashMap<ConeClassLikeLookupTag, Map<ConeClassLikeLookupTag, List<ConeClassLikeType>>?>(1000, 0.5f)
@@ -56,8 +82,8 @@ class FirCorrespondingSupertypesCache(private val session: FirSession) : FirSess
     private fun computeSupertypesMap(
         subtypeLookupTag: ConeClassLikeLookupTag,
         state: TypeCheckerState
-    ): Map<ConeClassLikeLookupTag, List<ConeClassLikeType>>? {
-        val resultingMap = HashMap<ConeClassLikeLookupTag, List<ConeClassLikeType>>()
+    ): Map<ConeClassLikeLookupTag, MutableList<ConeClassLikeType>>? {
+        val resultingMap = HashMap<ConeClassLikeLookupTag, MutableList<ConeClassLikeType>>()
 
         val subtypeFirClass: FirClassLikeDeclaration = subtypeLookupTag.toSymbol(session)?.fir ?: return null
 
@@ -83,14 +109,16 @@ class FirCorrespondingSupertypesCache(private val session: FirSession) : FirSess
 
     private fun computeSupertypePolicyAndPutInMap(
         supertype: SimpleTypeMarker,
-        resultingMap: MutableMap<ConeClassLikeLookupTag, List<ConeClassLikeType>>,
+        resultingMap: MutableMap<ConeClassLikeLookupTag, MutableList<ConeClassLikeType>>,
         state: TypeCheckerState
     ): TypeCheckerState.SupertypesPolicy {
         val supertypeLookupTag = (supertype as ConeClassLikeType).lookupTag
         val captured =
             state.typeSystemContext.captureFromArguments(supertype, CaptureStatus.FOR_SUBTYPING) as ConeClassLikeType? ?: supertype
 
-        resultingMap[supertypeLookupTag] = listOf(captured)
+        // ConcurrentHashMap : Abst
+        val list = resultingMap.computeIfAbsent(supertypeLookupTag) { mutableListOf() }
+        list += captured
 
         return when {
             with(state.typeSystemContext) { captured.argumentsCount() } == 0 -> {
