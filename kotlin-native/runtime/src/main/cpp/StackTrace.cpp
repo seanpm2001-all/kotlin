@@ -15,6 +15,8 @@
 #include <execinfo.h>
 #endif
 
+#include <algorithm>
+
 #include "Common.h"
 #include "ExecFormat.h"
 #include "Porting.h"
@@ -150,12 +152,11 @@ NO_INLINE size_t kotlin::internal::GetCurrentStackTrace(size_t skipFrames, std_s
     constexpr int maxSize = 32;
     void* tmpBuffer[maxSize];
     size_t size = backtrace(tmpBuffer, maxSize);
+    if (size <= kSkipFrames) return 0;
 
-    size_t toIndex = 0;
-    for (size_t fromIndex = kSkipFrames; fromIndex < size && toIndex < buffer.size(); fromIndex++, toIndex++) {
-        buffer[toIndex] = tmpBuffer[fromIndex];
-    }
-    return toIndex;
+    size_t elementsCount = std::min(buffer.size(), size - kSkipFrames);
+    std::copy_n(std::begin(tmpBuffer) + kSkipFrames, elementsCount, std::begin(buffer));
+    return elementsCount;
 #endif // !USE_GCC_UNWIND
 #endif // !KONAN_NO_BACKTRACE
 }

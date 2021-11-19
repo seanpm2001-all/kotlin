@@ -27,11 +27,11 @@ public:
     using Iterator = void* const*;
 
     StackTrace() noexcept : size_(0), buffer_{nullptr} {};
-    StackTrace(const StackTrace<Capacity>& other) = default;
-    StackTrace(StackTrace<Capacity>&& other) noexcept = default;
+    StackTrace(const StackTrace& other) = default;
+    StackTrace(StackTrace&& other) noexcept = default;
 
-    StackTrace& operator=(const StackTrace<Capacity>& other) = default;
-    StackTrace& operator=(StackTrace<Capacity>&& other) noexcept = default;
+    StackTrace& operator=(const StackTrace& other) = default;
+    StackTrace& operator=(StackTrace&& other) noexcept = default;
 
     size_t size() const noexcept {
         return size_;
@@ -53,7 +53,7 @@ public:
         return std_support::span<void* const>(buffer_.data(), size());
     }
 
-    NO_INLINE static StackTrace<Capacity> current(size_t skipFrames = 0) noexcept {
+    NO_INLINE static StackTrace current(size_t skipFrames = 0) noexcept {
         StackTrace result;
         result.size_ = internal::GetCurrentStackTrace(
                 skipFrames + 1, std_support::span<void*>(result.buffer_.data(), result.buffer_.size()));
@@ -71,11 +71,11 @@ public:
     using Iterator = void* const*;
 
     StackTrace() noexcept = default;
-    StackTrace(const StackTrace<kDynamicCapacity>& other) = default;
-    StackTrace(StackTrace<kDynamicCapacity>&& other) noexcept = default;
+    StackTrace(const StackTrace& other) = default;
+    StackTrace(StackTrace&& other) noexcept = default;
 
-    StackTrace& operator=(const StackTrace<kDynamicCapacity>& other) noexcept = default;
-    StackTrace& operator=(StackTrace<kDynamicCapacity>&& other) noexcept = default;
+    StackTrace& operator=(const StackTrace& other) noexcept = default;
+    StackTrace& operator=(StackTrace&& other) noexcept = default;
 
     size_t size() const noexcept {
         return buffer_.size();
@@ -97,7 +97,7 @@ public:
         return std_support::span<void* const>(buffer_.data(), size());
     }
 
-    NO_INLINE static StackTrace<kDynamicCapacity> current(size_t skipFrames = 0) {
+    NO_INLINE static StackTrace current(size_t skipFrames = 0) {
         StackTrace result;
         result.buffer_ = internal::GetCurrentStackTrace(skipFrames + 1);
         return result;
