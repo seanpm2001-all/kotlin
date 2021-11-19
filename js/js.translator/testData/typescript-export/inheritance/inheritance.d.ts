@@ -75,18 +75,14 @@ declare namespace JS_TESTS {
             static readonly EC1: foo.EC & {
                 readonly name: "EC1";
                 readonly ordinal: 0;
-                baz: string;
-                readonly bah: string;
             };
             static readonly EC2: foo.EC & {
                 readonly name: "EC2";
                 readonly ordinal: 1;
-                baz: string;
             };
             static readonly EC3: foo.EC & {
                 readonly name: "EC3";
                 readonly ordinal: 2;
-                baz: string;
             };
             readonly foo: string;
             bar: string;

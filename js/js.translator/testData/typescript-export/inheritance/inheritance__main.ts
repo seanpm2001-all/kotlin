@@ -98,17 +98,16 @@ function box(): string {
     if (EC.EC1.bar != "bar") return "Fail 41"
     if (EC.EC1.baz != "ec1") return "Fail 42"
     if (EC.EC1.bay() != "bay") return "Fail 43"
-    // if (EC.EC1.bah != "bah") return "Fail 44"
 
-    if (EC.EC2.foo != "foo") return "Fail 45"
-    if (EC.EC2.bar != "bar") return "Fail 46"
-    if (EC.EC2.baz != "ec2") return "Fail 47"
-    if (EC.EC2.bay() != "bay") return "Fail 48"
+    if (EC.EC2.foo != "foo") return "Fail 44"
+    if (EC.EC2.bar != "bar") return "Fail 45"
+    if (EC.EC2.baz != "ec2") return "Fail 46"
+    if (EC.EC2.bay() != "bay") return "Fail 47"
 
-    if (EC.EC3.foo != "foo") return "Fail 49"
-    if (EC.EC3.bar != "bar") return "Fail 50"
-    if (EC.EC3.baz != "ec3") return "Fail 51"
-    if (EC.EC3.bay() != "bay") return "Fail 52"
+    if (EC.EC3.foo != "foo") return "Fail 48"
+    if (EC.EC3.bar != "bar") return "Fail 49"
+    if (EC.EC3.baz != "ec3") return "Fail 50"
+    if (EC.EC3.bay() != "bay") return "Fail 51"
 
     return "OK";
 }

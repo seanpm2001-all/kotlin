@@ -147,6 +147,8 @@ enum class EC : I3 {
         override var baz = "ec1"
 
         val bah = "bah"
+
+        fun huh() = "huh"
     },
     EC2 {
         override var baz = "ec2"

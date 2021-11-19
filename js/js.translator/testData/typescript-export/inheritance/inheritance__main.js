@@ -149,22 +149,21 @@ function box() {
         return "Fail 42";
     if (EC.EC1.bay() != "bay")
         return "Fail 43";
-    // if (EC.EC1.bah != "bah") return "Fail 44"
     if (EC.EC2.foo != "foo")
-        return "Fail 45";
+        return "Fail 44";
     if (EC.EC2.bar != "bar")
-        return "Fail 46";
+        return "Fail 45";
     if (EC.EC2.baz != "ec2")
-        return "Fail 47";
+        return "Fail 46";
     if (EC.EC2.bay() != "bay")
-        return "Fail 48";
+        return "Fail 47";
     if (EC.EC3.foo != "foo")
-        return "Fail 49";
+        return "Fail 48";
     if (EC.EC3.bar != "bar")
-        return "Fail 50";
+        return "Fail 49";
     if (EC.EC3.baz != "ec3")
-        return "Fail 51";
+        return "Fail 50";
     if (EC.EC3.bay() != "bay")
-        return "Fail 52";
+        return "Fail 51";
     return "OK";
 }

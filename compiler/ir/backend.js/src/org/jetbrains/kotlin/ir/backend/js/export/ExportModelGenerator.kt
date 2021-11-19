@@ -8,7 +8,10 @@ package org.jetbrains.kotlin.ir.backend.js.export
 import org.jetbrains.kotlin.backend.common.ir.isExpect
 import org.jetbrains.kotlin.backend.common.ir.isMethodOfAny
 import org.jetbrains.kotlin.config.CommonConfigurationKeys
-import org.jetbrains.kotlin.descriptors.*
+import org.jetbrains.kotlin.descriptors.ClassKind
+import org.jetbrains.kotlin.descriptors.DescriptorVisibilities
+import org.jetbrains.kotlin.descriptors.DescriptorVisibility
+import org.jetbrains.kotlin.descriptors.Modality
 import org.jetbrains.kotlin.ir.backend.js.JsIrBackendContext
 import org.jetbrains.kotlin.ir.backend.js.JsLoweredDeclarationOrigin
 import org.jetbrains.kotlin.ir.backend.js.lower.ES6AddInternalParametersToConstructorPhase.ES6_INIT_BOX_PARAMETER
@@ -145,10 +148,6 @@ class ExportModelGenerator(
         val irEnumEntry = context.mapping.fieldToEnumEntry[field]
             ?: error("Unable to find enum entry for ${field.fqNameWhenAvailable}")
 
-        val correspondingClassDeclarations = irEnumEntry.correspondingClass?.let {
-            exportClassDeclarations(it).members
-        } ?: emptyList()
-
         val parentClass = field.parent as IrClass
 
         val name = irEnumEntry.getExportedIdentifier()
@@ -178,7 +177,7 @@ class ExportModelGenerator(
         )
 
         val type = ExportedType.InlineInterfaceType(
-            listOf(nameProperty, ordinalProperty) + correspondingClassDeclarations
+            listOf(nameProperty, ordinalProperty)
         )
 
         return ExportedProperty(
