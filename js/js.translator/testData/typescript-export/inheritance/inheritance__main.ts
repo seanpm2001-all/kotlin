@@ -7,7 +7,6 @@ import getI3 = JS_TESTS.foo.getI3;
 import getA = JS_TESTS.foo.getA;
 import getB = JS_TESTS.foo.getB;
 import getC = JS_TESTS.foo.getC;
-import A2 = JS_TESTS.foo.A2;
 import B2 = JS_TESTS.foo.B2;
 import C2 = JS_TESTS.foo.C2;
 import EC = JS_TESTS.foo.EC;

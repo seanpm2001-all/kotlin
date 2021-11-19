@@ -512,8 +512,6 @@ class ExportModelGenerator(
             return Exportability.Prohibited("Inline reified function")
         if (function.isSuspend)
             return Exportability.Prohibited("Suspend function")
-        if (function.isMethodOfAny())
-            return Exportability.NotNeeded
         if (function.isFakeOverride && !function.isAllowedFakeOverriddenDeclaration(context))
             return Exportability.NotNeeded
         if (function.origin == JsLoweredDeclarationOrigin.BRIDGE_WITHOUT_STABLE_NAME ||

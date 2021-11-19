@@ -21,7 +21,6 @@ var getI3 = JS_TESTS.foo.getI3;
 var getA = JS_TESTS.foo.getA;
 var getB = JS_TESTS.foo.getB;
 var getC = JS_TESTS.foo.getC;
-var A2 = JS_TESTS.foo.A2;
 var B2 = JS_TESTS.foo.B2;
 var C2 = JS_TESTS.foo.C2;
 var EC = JS_TESTS.foo.EC;
