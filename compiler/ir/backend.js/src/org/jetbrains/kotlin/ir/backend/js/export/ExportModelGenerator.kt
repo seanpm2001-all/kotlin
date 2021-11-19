@@ -8,9 +8,7 @@ package org.jetbrains.kotlin.ir.backend.js.export
 import org.jetbrains.kotlin.backend.common.ir.isExpect
 import org.jetbrains.kotlin.backend.common.ir.isMethodOfAny
 import org.jetbrains.kotlin.config.CommonConfigurationKeys
-import org.jetbrains.kotlin.descriptors.ClassKind
-import org.jetbrains.kotlin.descriptors.DescriptorVisibilities
-import org.jetbrains.kotlin.descriptors.Modality
+import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.ir.backend.js.JsIrBackendContext
 import org.jetbrains.kotlin.ir.backend.js.JsLoweredDeclarationOrigin
 import org.jetbrains.kotlin.ir.backend.js.lower.ES6AddInternalParametersToConstructorPhase.ES6_INIT_BOX_PARAMETER
@@ -98,7 +96,7 @@ class ExportModelGenerator(
                 constructor.valueParameters.filterNot { it.origin === ES6_RESULT_TYPE_PARAMETER || it.origin === ES6_INIT_BOX_PARAMETER }
         return ExportedConstructor(
             parameters = allValueParameters.map { exportParameter(it) },
-            isProtected = constructor.visibility == DescriptorVisibilities.PROTECTED
+            visibility = constructor.visibility.toVisibility()
         )
     }
 
@@ -259,11 +257,20 @@ class ExportModelGenerator(
             enumExportedMember
         }
 
+        val privateConstructor = ExportedConstructor(
+            parameters = emptyList(),
+            visibility = Visibility.PRIVATE
+        )
+
         return exportClass(
             klass,
-            members,
+            listOf(privateConstructor) + members,
             nestedClasses
-        )
+        ).let {
+            (it as ExportedClass).copy(
+                isAbstract = true,
+            )
+        }
     }
 
     private fun exportClassDeclarations(
@@ -646,6 +653,12 @@ fun IrDeclaration.isExported(context: JsIrBackendContext?): Boolean {
     val candidate = getExportCandidate(this) ?: return false
     return shouldDeclarationBeExported(candidate, context)
 }
+
+private fun DescriptorVisibility.toVisibility() =
+    when (this) {
+        DescriptorVisibilities.PROTECTED -> Visibility.PROTECTED
+        else -> Visibility.DEFAULT
+    }
 
 private val reservedWords = setOf(
     "break",

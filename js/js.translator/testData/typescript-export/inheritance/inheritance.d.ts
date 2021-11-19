@@ -71,6 +71,7 @@ declare namespace JS_TESTS {
             bay(): string;
         }
         abstract class EC implements foo.I3 {
+            private constructor();
             static readonly EC1: foo.EC & {
                 readonly name: "EC1";
                 readonly ordinal: 0;
