@@ -73,8 +73,12 @@ class ExportModelGenerator(
         }
     }
 
-    private fun exportFunction(function: IrSimpleFunction): ExportedDeclaration? =
-        when (val exportability = functionExportability(function)) {
+    private fun exportFunction(function: IrSimpleFunction): ExportedDeclaration? {
+        if (function.origin == JsLoweredDeclarationOrigin.ENUM_GET_INSTANCE_FUNCTION) {
+            return null
+        }
+
+        return when (val exportability = functionExportability(function)) {
             is Exportability.NotNeeded -> null
             is Exportability.Prohibited -> ErrorDeclaration(exportability.reason)
             is Exportability.Allowed -> {
@@ -92,6 +96,7 @@ class ExportModelGenerator(
                 )
             }
         }
+    }
 
     private fun exportConstructor(constructor: IrConstructor): ExportedDeclaration? {
         if (!constructor.isPrimary) return null
